@@ -10,7 +10,7 @@ module Discounts
     # TODO: Add logic
   end
 
-  def coffee_addict
+  def volume_ratio_discount
     # TODO: Add logic
   end
 end

@@ -8,10 +8,10 @@ It allows users to add products to a cart, will automatically apply discounts an
 
 * Add products to the cart.
 * Displays a receipt of scanned items including discounts.
-* Supports the following discounts:
+* Supports the following types of discounts:
   * Buy one get one free
   * Bulk purchase discount
-  * Coffee addict
+  * Volume ratio discount
 * Additional discounts can be added to `discounts.rb`.
 
 ## Getting Started
