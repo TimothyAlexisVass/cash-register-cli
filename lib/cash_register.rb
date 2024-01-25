@@ -18,6 +18,29 @@ class CashRegister
     @products ||= load_products
   end
 
+  def scan(product_code)
+    @cart[product_code] = @cart.fetch(product_code, 0) + 1
+  end
+
+  def purchases
+    @cart.sum do |code, quantity|
+      products[code].price * quantity
+    end
+  end
+
+  def discounts
+    @cart.sum do |code, quantity|
+      product = products[code]
+      next 0 unless product.discount_type
+
+      send(product.discount_type, product:, quantity:, **product.discount_arguments)
+    end
+  end
+
+  def total
+    purchases - discounts
+  end
+
   private
 
   def load_products
