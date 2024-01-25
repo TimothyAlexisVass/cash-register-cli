@@ -21,6 +21,7 @@ It allows users to add products to a cart, will automatically apply discounts an
 * RSpec 3.12.0 < 4.0
 
 ### Preliminary modifications
+* Add/replace products in `data/products.json`, which will be loaded into memory when the application starts.
 * Additional discount rules can be added to the Discounts module in `lib/discounts.rb`.
 
 ### Installation
@@ -47,6 +48,9 @@ ruby app.rb
 
 ## File structure
 ```
+├── data
+│ └── products.json             File defining products available for purchase.
+│
 ├── lib
 │ ├── cash_register.rb          Main logic for adding products to the cart and computing the total price.
 │ ├── discounts.rb              Module containing methods for special pricing conditions.

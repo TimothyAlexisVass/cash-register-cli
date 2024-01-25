@@ -1,0 +1,28 @@
+[
+  {
+    "code": "GR1",
+    "name": "Green Tea",
+    "price": 3.11,
+    "discount_type": "buy_one_get_one_free"
+  },
+  {
+    "code": "SR1",
+    "name": "Strawberries",
+    "price": 5.00,
+    "discount_type": "bulk_purchase_discount",
+    "discount_arguments": {
+      "discount_limit": 3,
+      "discounted_price": 4.50
+    }
+  },
+  {
+    "code": "CF1",
+    "name": "Coffee",
+    "price": 11.23,
+    "discount_type": "volume_ratio_discount",
+    "discount_arguments": {
+      "discount_limit": 3,
+      "discounted_ratio": "2/3"
+    }
+  }
+]
