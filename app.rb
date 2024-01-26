@@ -15,7 +15,25 @@ class App
   end
 
   def run
-    # TODO: Add logic
+    display_available_products
+  end
+
+  private
+
+  def products
+    @products ||= @cash_register.products
+  end
+
+  def cart
+    @cart ||= @cash_register.cart
+  end
+
+  def display_available_products
+    puts "\n============== Available Products ============="
+    products.each do |code, product|
+      puts "#{code}: #{product.name.ljust(31)} #{format('%.2f', product.price).rjust(8)} €"
+    end
+    puts
   end
 end
 
