@@ -54,6 +54,53 @@ class CashRegister
 
   private
 
+  def humanize_string(snake_case_string)
+    snake_case_string.split('_').join(' ').capitalize
+  end
+
+  def currency_format(amount)
+    "#{format('%.2f', amount).rjust(8)} €"
+  end
+
+  def display_purchases
+    puts "\n================== Purchases =================="
+    @cart.each do |code, quantity|
+      product = products[code]
+      puts "#{product.name[..30].ljust(30)} #{quantity.to_s.rjust(3)} × #{currency_format(product.price)}"
+      puts "#{' ' * 36} #{currency_format(product.price * quantity)}"
+    end
+  end
+
+  def display_discounts
+    puts '================== Discounts =================='
+    @cart.each do |code, quantity|
+      product = products[code]
+      next unless product.discount_type
+
+      discount_amount = send(product.discount_type, product: product, quantity: quantity, **product.discount_arguments)
+      next unless discount_amount.positive?
+
+      discount_info(product, discount_amount)
+    end
+  end
+
+  def discount_info(product, discount_amount)
+    print "#{product.code[..3].ljust(3)} "
+    print "(#{humanize_string product.discount_type.to_s[..28]})".ljust(30)
+    puts " - #{currency_format(discount_amount)}"
+  end
+
+  def display_total
+    puts '==================   Total   =================='
+    puts "Purchases:                           #{currency_format(purchases)}"
+    puts "Discounts:                         - #{currency_format(discounts)}"
+  end
+
+  def display_grand_total
+    puts '-' * 47
+    puts "\e[32mTotal amount due:                    #{currency_format(total)}\e[0m\n"
+  end
+
   def load_products
     products_data = JSON.parse(File.read('data/products.json'), symbolize_names: true)
     products_data.map do |product_data|
