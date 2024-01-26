@@ -10,7 +10,7 @@ RSpec.describe CashRegister do
   end
 
   before do
-    allow(File).to receive(:read).with('data/products.json').and_return([product_data].to_json)
+    allow(File).to receive(:read).with('data/products.json').and_return([product_data].to_json).once
   end
 
   describe '#scan' do
@@ -45,6 +45,25 @@ RSpec.describe CashRegister do
       cash_register.scan('PR1')
       cash_register.scan('PR1')
       expect(cash_register.total).to eq(10.0)
+    end
+  end
+
+  describe '#products' do
+    it 'loads and returns products from the products.json file' do
+      expect(cash_register.products).to be_a(Hash).and include(
+        'PR1' => an_instance_of(Product).and(
+          have_attributes(
+            code: 'PR1',
+            name: 'Product 1',
+            price: 10.0,
+            discount_type: :buy_one_get_one_free
+          )
+        )
+      )
+    end
+    
+    it 'memoizes the products' do
+      expect(cash_register.products).to eq cash_register.products
     end
   end
 end
