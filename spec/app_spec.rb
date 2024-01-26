@@ -93,11 +93,11 @@ RSpec.describe App do
       end
 
       it 'shows the total purchases' do
-        expect { cash_register.receipt }.to output(/Purchases:\s+5.50 €/).to_stdout
+        expect { app.run }.to output(/Purchases:\s+5.50 €/).to_stdout
       end
 
       it 'shows the total discounts' do
-        expect { cash_register.receipt }.to output(/Discounts:\s+-\s+2.20 €/).to_stdout
+        expect { app.run }.to output(/Discounts:\s+-\s+2.20 €/).to_stdout
       end
 
       it 'calculates the correct total amount due' do
@@ -138,6 +138,12 @@ RSpec.describe App do
         allow(app).to receive(:gets).and_return('a a,b, b b', 'b', 'receipt')
 
         expect { app.run }.to(output(/2 Product A, 4 Product B/).to_stdout)
+      end
+
+      it 'prints the terminal bell character for an invalid product code' do
+        allow(app).to receive(:gets).and_return('invalid', 'receipt')
+
+        expect { app.run }.to output(/\a/).to_stdout
       end
 
       it 'shows an error message for an invalid product code' do
