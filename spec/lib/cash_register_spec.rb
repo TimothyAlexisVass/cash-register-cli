@@ -13,6 +13,12 @@ RSpec.describe CashRegister do
     allow(File).to receive(:read).with('data/products.json').and_return([product_data].to_json).once
   end
 
+  describe '#initialize' do
+    it 'initializes a new CashRegister object with an empty cart' do
+      expect(cash_register.instance_variable_get(:@cart)).to be_an_instance_of(Hash).and be_empty
+    end
+  end
+
   describe '#products' do
     it 'loads and returns products from the products.json file' do
       expect(cash_register.products).to be_a(Hash).and include(
