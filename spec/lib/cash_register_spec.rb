@@ -13,6 +13,25 @@ RSpec.describe CashRegister do
     allow(File).to receive(:read).with('data/products.json').and_return([product_data].to_json).once
   end
 
+  describe '#products' do
+    it 'loads and returns products from the products.json file' do
+      expect(cash_register.products).to be_a(Hash).and include(
+        'PR1' => an_instance_of(Product).and(
+          have_attributes(
+            code: 'PR1',
+            name: 'Product 1',
+            price: 10.0,
+            discount_type: :buy_one_get_one_free
+          )
+        )
+      )
+    end
+    
+    it 'memoizes the products' do
+      expect(cash_register.products).to eq cash_register.products
+    end
+  end
+
   describe '#scan' do
     it 'adds the scanned product to the cart' do
       expect { cash_register.scan('PR1') }.to change { cash_register.cart['PR1'] }.from(nil).to(1)
@@ -48,22 +67,4 @@ RSpec.describe CashRegister do
     end
   end
 
-  describe '#products' do
-    it 'loads and returns products from the products.json file' do
-      expect(cash_register.products).to be_a(Hash).and include(
-        'PR1' => an_instance_of(Product).and(
-          have_attributes(
-            code: 'PR1',
-            name: 'Product 1',
-            price: 10.0,
-            discount_type: :buy_one_get_one_free
-          )
-        )
-      )
-    end
-    
-    it 'memoizes the products' do
-      expect(cash_register.products).to eq cash_register.products
-    end
-  end
 end
