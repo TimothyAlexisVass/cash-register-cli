@@ -112,9 +112,23 @@ RSpec.describe CashRegister do
     end
 
     context "with purchases but no discounts" do
-      it 'does not print the discounts when there are none' do
+      it 'does not show any discounts when there are none' do
         cash_register.scan('PR1')
         expect { cash_register.receipt }.not_to output(/Discounts/).to_stdout
+      end
+
+      it 'does not show the total heading' do
+        cash_register.scan('PR1')
+        expect { cash_register.receipt }.not_to output(/=+   Total   =+/).to_stdout
+      end
+
+      it 'does not show the purchases in the totals section' do
+        cash_register.scan('PR1')
+        expect { cash_register.receipt }.not_to output(/Purchases:/).to_stdout
+      end
+
+      it 'shows the total amount due' do
+        expect { cash_register.receipt }.to output(/Total amount due:\s+10.00/).to_stdout
       end
     end
 

@@ -41,6 +41,17 @@ class CashRegister
     purchases - discounts
   end
 
+  def receipt
+    return unless purchases.positive?
+
+    display_purchases
+    if discounts.positive?
+      display_discounts
+      display_total
+    end
+    display_grand_total
+  end
+
   private
 
   def load_products
