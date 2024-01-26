@@ -105,15 +105,15 @@ RSpec.describe CashRegister do
       end
 
       it 'shows the total purchases' do
-        expect { cash_register.receipt }.to output(/Purchases:\s+20.00/).to_stdout
+        expect { cash_register.receipt }.to output(/Purchases:\s+20.00 €/).to_stdout
       end
 
       it 'shows the total discounts' do
-        expect { cash_register.receipt }.to output(/Discounts:\s+-\s+10.00/).to_stdout
+        expect { cash_register.receipt }.to output(/Discounts:\s+-\s+10.00 €/).to_stdout
       end
 
       it 'shows the total amount due' do
-        expect { cash_register.receipt }.to output(/Total amount due:\s+10.00/).to_stdout
+        expect { cash_register.receipt }.to output(/Total amount due:\s+10.00 €/).to_stdout
       end
     end
 
@@ -122,7 +122,7 @@ RSpec.describe CashRegister do
         cash_register.scan('PR1')
       end
 
-      it 'does not show any discounts when there are none' do
+      it 'does not show any discounts' do
         expect { cash_register.receipt }.not_to output(/Discounts/).to_stdout
       end
 
@@ -135,7 +135,7 @@ RSpec.describe CashRegister do
       end
 
       it 'shows the total amount due' do
-        expect { cash_register.receipt }.to output(/Total amount due:\s+10.00/).to_stdout
+        expect { cash_register.receipt }.to output(/Total amount due:\s+10.00 €/).to_stdout
       end
     end
 
