@@ -12,7 +12,6 @@ It allows users to add products to a cart, will automatically apply discounts an
   * Buy one get one free
   * Bulk purchase discount
   * Volume ratio discount
-* Additional discounts can be added to `discounts.rb`.
 
 ## Getting Started
 
