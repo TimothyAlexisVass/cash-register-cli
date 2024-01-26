@@ -67,4 +67,59 @@ RSpec.describe CashRegister do
     end
   end
 
+  describe '#receipt' do
+    context 'with purchases and discounts' do
+      before do
+        cash_register.scan('PR1')
+        cash_register.scan('PR1')
+      end
+
+      it 'includes the purchases heading' do
+        expect { cash_register.receipt }.to output(/=+ Purchases =+/).to_stdout
+      end
+
+      it 'includes the product in the receipt' do
+        expect { cash_register.receipt }.to output(/Product 1\s+2 ×\s+10.00 €/).to_stdout
+      end
+
+      it 'includes the subtotal' do
+        expect { cash_register.receipt }.to output(/^\s+20.00 €/).to_stdout
+      end
+
+      it 'includes the discounts heading' do
+        expect { cash_register.receipt }.to output(/=+ Discounts =+/).to_stdout
+      end
+
+      it 'shows the discount correctly' do
+        expect { cash_register.receipt }.to output(/Buy one get one free\s+-\s+10.00 €/).to_stdout
+      end
+
+      it 'shows the total heading' do
+        expect { cash_register.receipt }.to output(/=+   Total   =+/).to_stdout
+      end
+
+      it 'shows the total purchases' do
+        expect { cash_register.receipt }.to output(/Purchases:\s+20.00/).to_stdout
+      end
+
+      it 'shows the total discounts' do
+        expect { cash_register.receipt }.to output(/Discounts:\s+-\s+10.00/).to_stdout
+      end
+
+      it 'shows the total amount due' do
+        expect { cash_register.receipt }.to output(/Total amount due:\s+10.00/).to_stdout
+      end
+    end
+
+    context "with purchases but no discounts" do
+      it 'does not print the discounts when there are none' do
+        cash_register.scan('PR1')
+        expect { cash_register.receipt }.not_to output(/Discounts/).to_stdout
+      end
+    end
+
+    it 'does not print the receipt when there are no purchases' do
+      expect { cash_register.receipt }.not_to output.to_stdout
+    end
+  end
 end
