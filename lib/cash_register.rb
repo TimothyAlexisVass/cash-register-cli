@@ -65,10 +65,15 @@ class CashRegister
   def display_purchases
     puts "\n================== Purchases =================="
     @cart.each do |code, quantity|
-      product = products[code]
-      puts "#{product.name[..30].ljust(30)} #{quantity.to_s.rjust(3)} × #{currency_format(product.price)}"
-      puts "#{' ' * 36} #{currency_format(product.price * quantity)}"
+      purchase_info(products[code], quantity)
     end
+  end
+
+  def purchase_info(product, quantity)
+    print "#{product.name[..30].ljust(30)} "
+    print "#{quantity.to_s.rjust(3)} "
+    puts "× #{currency_format(product.price)}"
+    puts "#{' ' * 36} #{currency_format(product.price * quantity)}"
   end
 
   def display_discounts
@@ -77,7 +82,7 @@ class CashRegister
       product = products[code]
       next unless product.discount_type
 
-      discount_amount = send(product.discount_type, product: product, quantity: quantity, **product.discount_arguments)
+      discount_amount = send(product.discount_type, product:, quantity:, **product.discount_arguments)
       next unless discount_amount.positive?
 
       discount_info(product, discount_amount)
@@ -92,20 +97,19 @@ class CashRegister
 
   def display_total
     puts '==================   Total   =================='
-    puts "Purchases:                           #{currency_format(purchases)}"
-    puts "Discounts:                         - #{currency_format(discounts)}"
+    puts "Purchases:".ljust(37) + currency_format(purchases)
+    puts "Discounts:".ljust(35) + "- #{currency_format(discounts)}"
   end
 
   def display_grand_total
     puts '-' * 47
-    puts "\e[32mTotal amount due:                    #{currency_format(total)}\e[0m\n"
+    puts "\e[32mTotal amount due:".ljust(42) + "#{currency_format(total)}\e[0m\n\n"
   end
 
   def load_products
     products_data = JSON.parse(File.read('data/products.json'), symbolize_names: true)
     products_data.map do |product_data|
-      product = Product.new(**product_data)
-      [product.code, product]
+      [product_data[:code], Product.new(**product_data)]
     end.to_h
   end
 end

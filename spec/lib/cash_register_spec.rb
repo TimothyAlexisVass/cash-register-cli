@@ -20,8 +20,9 @@ RSpec.describe CashRegister do
   end
 
   describe '#products' do
+    let(:products) { cash_register.products }
     it 'loads and returns products from the products.json file' do
-      expect(cash_register.products).to be_a(Hash).and include(
+      expect(products).to be_a(Hash).and include(
         'PR1' => an_instance_of(Product).and(
           have_attributes(
             code: 'PR1',
@@ -32,9 +33,9 @@ RSpec.describe CashRegister do
         )
       )
     end
-    
+
     it 'memoizes the products' do
-      expect(cash_register.products).to eq cash_register.products
+      expect(products).to eq cash_register.products
     end
   end
 
@@ -74,6 +75,8 @@ RSpec.describe CashRegister do
   end
 
   describe '#receipt' do
+    let(:result) { cash_register.receipt }
+
     context 'with purchases and discounts' do
       before do
         cash_register.scan('PR1')
@@ -81,66 +84,66 @@ RSpec.describe CashRegister do
       end
 
       it 'includes the purchases heading' do
-        expect { cash_register.receipt }.to output(/=+ Purchases =+/).to_stdout
+        expect { result }.to output(/=+ Purchases =+/).to_stdout
       end
 
       it 'includes the product in the receipt' do
-        expect { cash_register.receipt }.to output(/Product 1\s+2 ×\s+10.00 €/).to_stdout
+        expect { result }.to output(/Product 1\s+2 ×\s+10.00 €/).to_stdout
       end
 
       it 'includes the subtotal' do
-        expect { cash_register.receipt }.to output(/^\s+20.00 €/).to_stdout
+        expect { result }.to output(/^\s+20.00 €/).to_stdout
       end
 
       it 'includes the discounts heading' do
-        expect { cash_register.receipt }.to output(/=+ Discounts =+/).to_stdout
+        expect { result }.to output(/=+ Discounts =+/).to_stdout
       end
 
       it 'shows the discount correctly' do
-        expect { cash_register.receipt }.to output(/PR1 \(Buy one get one free\)\s+-\s+10.00 €/).to_stdout
+        expect { result }.to output(/PR1 \(Buy one get one free\)\s+-\s+10.00 €/).to_stdout
       end
 
       it 'shows the total heading' do
-        expect { cash_register.receipt }.to output(/=+   Total   =+/).to_stdout
+        expect { result }.to output(/=+   Total   =+/).to_stdout
       end
 
       it 'shows the total purchases' do
-        expect { cash_register.receipt }.to output(/Purchases:\s+20.00 €/).to_stdout
+        expect { result }.to output(/Purchases:\s+20.00 €/).to_stdout
       end
 
       it 'shows the total discounts' do
-        expect { cash_register.receipt }.to output(/Discounts:\s+-\s+10.00 €/).to_stdout
+        expect { result }.to output(/Discounts:\s+-\s+10.00 €/).to_stdout
       end
 
       it 'shows the total amount due' do
-        expect { cash_register.receipt }.to output(/Total amount due:\s+10.00 €/).to_stdout
+        expect { result }.to output(/Total amount due:\s+10.00 €/).to_stdout
       end
     end
 
-    context "with purchases but no discounts" do
+    context 'with purchases but no discounts' do
       before do
         cash_register.scan('PR1')
       end
 
       it 'does not show any discounts' do
-        expect { cash_register.receipt }.not_to output(/Discounts/).to_stdout
+        expect { result }.not_to output(/Discounts/).to_stdout
       end
 
       it 'does not show the total heading' do
-        expect { cash_register.receipt }.not_to output(/=+   Total   =+/).to_stdout
+        expect { result }.not_to output(/=+   Total   =+/).to_stdout
       end
 
       it 'does not show the purchases in the totals section' do
-        expect { cash_register.receipt }.not_to output(/Purchases:/).to_stdout
+        expect { result }.not_to output(/Purchases:/).to_stdout
       end
 
       it 'shows the total amount due' do
-        expect { cash_register.receipt }.to output(/Total amount due:\s+10.00 €/).to_stdout
+        expect { result }.to output(/Total amount due:\s+10.00 €/).to_stdout
       end
     end
 
     it 'does not print the receipt when there are no purchases' do
-      expect { cash_register.receipt }.not_to output.to_stdout
+      expect { result }.not_to output.to_stdout
     end
   end
 end

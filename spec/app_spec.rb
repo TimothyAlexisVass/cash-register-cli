@@ -4,6 +4,7 @@ require_relative '../app'
 
 RSpec.describe App do
   let(:app) { described_class.new }
+  let(:result) { app.run }
 
   before do
     mock_products = {
@@ -27,15 +28,15 @@ RSpec.describe App do
       end
 
       it 'shows the available products heading' do
-        expect { app.run }.to output(/=+ Available Products =+/).to_stdout
+        expect { result }.to output(/=+ Available Products =+/).to_stdout
       end
 
       it 'shows the first available product' do
-        expect { app.run }.to output(/A: Product A\s+1.10 €/).to_stdout
+        expect { result }.to output(/A: Product A\s+1.10 €/).to_stdout
       end
 
       it 'shows the second available product' do
-        expect { app.run }.to output(/B: Product B\s+2.20 €/).to_stdout
+        expect { result }.to output(/B: Product B\s+2.20 €/).to_stdout
       end
     end
 
@@ -45,15 +46,15 @@ RSpec.describe App do
       end
 
       it 'does not show purchases' do
-        expect { app.run }.not_to output(/Purchases/).to_stdout
+        expect { result }.not_to output(/Purchases/).to_stdout
       end
 
       it 'does not show discounts' do
-        expect { app.run }.not_to output(/Discounts/).to_stdout
+        expect { result }.not_to output(/Discounts/).to_stdout
       end
 
       it 'does not show total' do
-        expect { app.run }.not_to output(/Total/).to_stdout
+        expect { result }.not_to output(/Total/).to_stdout
       end
     end
 
@@ -63,15 +64,15 @@ RSpec.describe App do
       end
 
       it 'does not show purchases' do
-        expect { app.run }.not_to output(/Purchases/).to_stdout
+        expect { result }.not_to output(/Purchases/).to_stdout
       end
 
       it 'does not show discounts' do
-        expect { app.run }.not_to output(/Discounts/).to_stdout
+        expect { result }.not_to output(/Discounts/).to_stdout
       end
 
       it 'does not show total' do
-        expect { app.run }.not_to output(/Total/).to_stdout
+        expect { result }.not_to output(/Total/).to_stdout
       end
     end
 
@@ -80,28 +81,32 @@ RSpec.describe App do
         allow(app).to receive(:gets).and_return('a', 'b', 'b', 'receipt')
       end
 
+      it 'shows the purchases heading' do
+        expect { result }.to output(/=+ Purchases =+/).to_stdout
+      end
+
       it 'applies discounts correctly' do
-        expect { app.run }.to output(/B\s+\(Buy one get one free\)\s+-\s+2.20 €/).to_stdout
+        expect { result }.to output(/B\s+\(Buy one get one free\)\s+-\s+2.20 €/).to_stdout
       end
 
       it 'shows the discounts heading' do
-        expect { app.run }.to output(/=+ Discounts =+/).to_stdout
+        expect { result }.to output(/=+ Discounts =+/).to_stdout
       end
 
       it 'shows the total heading' do
-        expect { app.run }.to output(/=+   Total   =+/).to_stdout
+        expect { result }.to output(/=+   Total   =+/).to_stdout
       end
 
       it 'shows the total purchases' do
-        expect { app.run }.to output(/Purchases:\s+5.50 €/).to_stdout
+        expect { result }.to output(/Purchases:\s+5.50 €/).to_stdout
       end
 
       it 'shows the total discounts' do
-        expect { app.run }.to output(/Discounts:\s+-\s+2.20 €/).to_stdout
+        expect { result }.to output(/Discounts:\s+-\s+2.20 €/).to_stdout
       end
 
       it 'calculates the correct total amount due' do
-        expect { app.run }.to output(/Total amount due:\s+3.30 €/).to_stdout
+        expect { result }.to output(/Total amount due:\s+3.30 €/).to_stdout
       end
     end
 
@@ -110,20 +115,24 @@ RSpec.describe App do
         allow(app).to receive(:gets).and_return('b', 'receipt')
       end
 
+      it 'shows the purchases heading' do
+        expect { result }.to output(/=+ Purchases =+/).to_stdout
+      end
+
       it 'does not show any discounts' do
-        expect { app.run }.not_to output(/Discounts/).to_stdout
+        expect { result }.not_to output(/Discounts/).to_stdout
       end
 
       it 'does not show the totals section' do
-        expect { app.run }.not_to output(/=+   Total   =+/).to_stdout
+        expect { result }.not_to output(/=+   Total   =+/).to_stdout
       end
 
       it 'does not show the purchases in the totals section' do
-        expect { app.run }.not_to output(/Purchases:/).to_stdout
+        expect { result }.not_to output(/Purchases:/).to_stdout
       end
 
       it 'calculates the correct total amount due' do
-        expect { app.run }.to output(/Total amount due:\s+2.20 €/).to_stdout
+        expect { result }.to output(/Total amount due:\s+2.20 €/).to_stdout
       end
     end
 
@@ -131,36 +140,36 @@ RSpec.describe App do
       it 'is case-insensitive when handling user input' do
         allow(app).to receive(:gets).and_return('A', 'b', 'ReCeIpT')
 
-        expect { app.run }.to output(/Product A.*Product B/).to_stdout
+        expect { result }.to output(/Product A.*Product B/).to_stdout
       end
 
       it 'accepts comma- and space separated inputs' do
         allow(app).to receive(:gets).and_return('a a,b, b b', 'b', 'receipt')
 
-        expect { app.run }.to(output(/2 Product A, 4 Product B/).to_stdout)
+        expect { result }.to(output(/2 Product A, 4 Product B/).to_stdout)
       end
 
       it 'prints the terminal bell character for an invalid product code' do
         allow(app).to receive(:gets).and_return('invalid', 'receipt')
 
-        expect { app.run }.to output(/\a/).to_stdout
+        expect { result }.to output(/\a/).to_stdout
       end
 
       it 'shows an error message for an invalid product code' do
         allow(app).to receive(:gets).and_return('invalid', 'receipt')
 
-        expect { app.run }.to output(/Invalid product code/).to_stdout
+        expect { result }.to output(/Invalid product code/).to_stdout
       end
 
       it 'confirms that the products were scanned' do
         allow(app).to receive(:gets).and_return('a b', 'receipt')
-  
-        expect { app.run }.to output(/Product A Scanned.+\n.+Product B Scanned/).to_stdout
+
+        expect { result }.to output(/Product A Scanned.+\n.+Product B Scanned/).to_stdout
       end
 
       it 'shows the cart content when products are scanned' do
         allow(app).to receive(:gets).and_return('a a b b b b', 'receipt')
-        expect { app.run }.to output(/=+ Products in the cart =+\n2 Product A, 4 Product B/).to_stdout
+        expect { result }.to output(/=+ Products in the cart =+\n2 Product A, 4 Product B/).to_stdout
       end
     end
   end
