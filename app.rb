@@ -48,7 +48,7 @@ class App
       end
       display_cart unless cart.empty?
     end
-    @cash_register.receipt unless @input == 'exit'
+    @cash_register.receipt if @input == 'receipt'
   end
 
   def display_input_message
