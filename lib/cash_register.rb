@@ -19,6 +19,7 @@ class CashRegister
   end
 
   def scan(product_code)
+    return false unless products.key?(product_code)
     @cart[product_code] = @cart.fetch(product_code, 0) + 1
   end
 
@@ -109,7 +110,7 @@ class CashRegister
   def load_products
     products_data = JSON.parse(File.read('data/products.json'), symbolize_names: true)
     products_data.map do |product_data|
-      [product_data[:code], Product.new(**product_data)]
+      [product_data[:code].upcase, Product.new(**product_data)]
     end.to_h
   end
 end

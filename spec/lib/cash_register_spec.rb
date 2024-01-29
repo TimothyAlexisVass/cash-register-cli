@@ -48,6 +48,14 @@ RSpec.describe CashRegister do
       33.times { cash_register.scan('PR1') }
       expect(cash_register.cart['PR1']).to eq(33)
     end
+
+    it 'does not count an invalid product' do
+      expect { cash_register.scan('invalid') }.to_not change { cash_register.cart['invalid'] }
+    end
+
+    it 'returns false for an invalid product code' do
+      expect(cash_register.scan('invalid')).to be_falsey
+    end
   end
 
   describe '#purchases' do

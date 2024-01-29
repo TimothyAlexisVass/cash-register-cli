@@ -40,15 +40,15 @@ class App
   def user_interaction_loop
     loop do
       display_input_message
-      @input = gets.chomp.gsub('"', '').downcase
-      break if %w[receipt exit].include?(@input)
+      @input = gets.chomp.gsub('"', '').upcase
+      break if %w[RECEIPT EXIT].include?(@input)
 
       @input.split(/,|\s+/).each do |code|
         scan_product(code.upcase.strip)
       end
       display_cart unless cart.empty?
     end
-    @cash_register.receipt if @input == 'receipt'
+    @cash_register.receipt if @input == 'RECEIPT'
   end
 
   def display_input_message
@@ -56,10 +56,9 @@ class App
     puts 'Enter "receipt" to show receipt or "exit" to quit.'
   end
 
-  def scan_product(code)
-    if products.key?(code)
-      @cash_register.scan(code)
-      puts "\e[34m#{products[code].name} Scanned\e[0m"
+  def scan_product(product_code)
+    if @cash_register.scan(product_code)
+      puts "\e[34m#{@cash_register.products[product_code].name} Scanned\e[0m"
     else
       terminal_sound
       puts "\e[31mInvalid product code. Please try again.\e[0m"
