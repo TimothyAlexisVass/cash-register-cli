@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative '../../lib/product'
-require_relative '../../lib/discounts'
+require 'product'
+require 'discounts'
 
 RSpec.describe Discounts do
   include described_class

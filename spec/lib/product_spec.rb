@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../lib/product'
+require 'product'
 
 RSpec.describe Product do
   describe 'Product attributes' do

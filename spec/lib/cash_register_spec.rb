@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'json'
-require_relative '../../lib/cash_register'
+require 'cash_register'
 
 RSpec.describe CashRegister do
   let(:cash_register) { described_class.new }
