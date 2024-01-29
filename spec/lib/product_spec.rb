@@ -12,44 +12,48 @@ RSpec.describe Product do
                           discount_arguments: { percentage: 20 })
     end
 
-    it 'has correct code for a product without discount' do
-      expect(product_without_discount.code).to eq('PR1')
+    context 'without discount' do
+      it 'has correct code' do
+        expect(product_without_discount.code).to eq('PR1')
+      end
+
+      it 'has correct name' do
+        expect(product_without_discount.name).to eq('Product 1')
+      end
+
+      it 'has correct price' do
+        expect(product_without_discount.price).to eq(1.1)
+      end
+
+      it 'has no discount type' do
+        expect(product_without_discount.discount_type).to be_nil
+      end
+
+      it 'has no discount arguments' do
+        expect(product_without_discount.discount_arguments).to be_empty
+      end
     end
 
-    it 'has correct name for a product without discount' do
-      expect(product_without_discount.name).to eq('Product 1')
-    end
+    context 'with discount' do
+      it 'has correct code' do
+        expect(product_with_discount.code).to eq('PR2')
+      end
 
-    it 'has correct price for a product without discount' do
-      expect(product_without_discount.price).to eq(1.1)
-    end
+      it 'has correct name' do
+        expect(product_with_discount.name).to eq('Product 2')
+      end
 
-    it 'has no discount type for a product without discount' do
-      expect(product_without_discount.discount_type).to be_nil
-    end
+      it 'has correct price' do
+        expect(product_with_discount.price).to eq(22.2)
+      end
 
-    it 'has no discount arguments for a product without discount' do
-      expect(product_without_discount.discount_arguments).to be_empty
-    end
+      it 'has correct discount type' do
+        expect(product_with_discount.discount_type).to eq(:percentage)
+      end
 
-    it 'has correct code for a product with discount' do
-      expect(product_with_discount.code).to eq('PR2')
-    end
-
-    it 'has correct name for a product with discount' do
-      expect(product_with_discount.name).to eq('Product 2')
-    end
-
-    it 'has correct price for a product with discount' do
-      expect(product_with_discount.price).to eq(22.2)
-    end
-
-    it 'has correct discount type for a product with discount' do
-      expect(product_with_discount.discount_type).to eq(:percentage)
-    end
-
-    it 'has correct discount arguments for a product with discount' do
-      expect(product_with_discount.discount_arguments).to eq(percentage: 20)
+      it 'has correct discount arguments' do
+        expect(product_with_discount.discount_arguments).to eq(percentage: 20)
+      end
     end
   end
 end

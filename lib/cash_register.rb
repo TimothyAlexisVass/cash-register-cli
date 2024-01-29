@@ -20,6 +20,7 @@ class CashRegister
 
   def scan(product_code)
     return false unless products.key?(product_code)
+
     @cart[product_code] = @cart.fetch(product_code, 0) + 1
   end
 
@@ -98,8 +99,8 @@ class CashRegister
 
   def display_total
     puts '==================   Total   =================='
-    puts "Purchases:".ljust(37) + currency_format(purchases)
-    puts "Discounts:".ljust(35) + "- #{currency_format(discounts)}"
+    puts 'Purchases:'.ljust(37) + currency_format(purchases)
+    puts 'Discounts:'.ljust(35) + "- #{currency_format(discounts)}"
   end
 
   def display_grand_total

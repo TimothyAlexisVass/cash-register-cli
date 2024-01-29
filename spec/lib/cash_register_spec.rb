@@ -21,15 +21,11 @@ RSpec.describe CashRegister do
 
   describe '#products' do
     let(:products) { cash_register.products }
+
     it 'loads and returns products from the products.json file' do
       expect(products).to be_a(Hash).and include(
         'PR1' => an_instance_of(Product).and(
-          have_attributes(
-            code: 'PR1',
-            name: 'Product 1',
-            price: 10.0,
-            discount_type: :buy_one_get_one_free
-          )
+          have_attributes(code: 'PR1', name: 'Product 1', price: 10.0, discount_type: :buy_one_get_one_free)
         )
       )
     end
@@ -40,21 +36,25 @@ RSpec.describe CashRegister do
   end
 
   describe '#scan' do
-    it 'adds the scanned product to the cart' do
-      expect { cash_register.scan('PR1') }.to change { cash_register.cart['PR1'] }.from(nil).to(1)
+    context 'with a valid product code' do
+      it 'adds the scanned product to the cart' do
+        expect { cash_register.scan('PR1') }.to change { cash_register.cart['PR1'] }.from(nil).to(1)
+      end
+
+      it 'increments the quantity when scanning the same product multiple times' do
+        33.times { cash_register.scan('PR1') }
+        expect(cash_register.cart['PR1']).to eq(33)
+      end
     end
 
-    it 'increments the quantity when scanning the same product multiple times' do
-      33.times { cash_register.scan('PR1') }
-      expect(cash_register.cart['PR1']).to eq(33)
-    end
+    context 'with an invalid product code' do
+      let(:result) { cash_register.scan('invalid') }
 
-    it 'does not count an invalid product' do
-      expect { cash_register.scan('invalid') }.to_not change { cash_register.cart['invalid'] }
-    end
-
-    it 'returns false for an invalid product code' do
-      expect(cash_register.scan('invalid')).to be_falsey
+      it 'does not increment the amount' do
+        expect(result).to be_falsey and(
+          expect(cash_register.cart.key?('invalid')).to be_falsey
+        )
+      end
     end
   end
 
